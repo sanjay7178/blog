@@ -1,3 +1,4 @@
+  import type { GiscusProps } from "@giscus/react";
 import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
@@ -17,6 +18,20 @@ export const SITE: Site = {
     text: "Suggest Changes",
     appendFilePath: true,
   },
+};
+
+
+export const GISCUS: GiscusProps = {
+  repo: "sanjay7178/blog",
+  repoId: "R_kgDONCRpkw",
+  category: "Announcements",
+  categoryId: "DIC_kwDONCRpk84Cjemz",
+  mapping: "pathname",
+  reactionsEnabled: "0",
+  emitMetadata: "0",
+  inputPosition: "bottom",
+  lang: "en",
+  loading: "lazy",
 };
 
 export const LOCALE = {
