@@ -51,8 +51,6 @@ Added the payload dictionary in the Burp Suite Intruder.
 
 Bruteforcing for API content retrieval of project data, resulting in a misconfigured data leak.
 
-<iframe width="700" height="400" src="https://www.youtube.com/embed/FpmfaGwH3kE?si=_iicYWxgznpTy0EX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
 Demo: [YouTube Video](https://www.youtube.com/embed/FpmfaGwH3kE?si=_iicYWxgznpTy0EX)
 
 ![](@assets/attachment/85b8245a0d5b93402462a655b70544a6.png)
