@@ -1,7 +1,7 @@
 ---
 author: Immortal
 pubDatetime: 2024-12-01T15:22:00Z
-modDatetime: 2024-13-01T09:12:47.400Z
+modDatetime: 2024-12-01T15:23:00Z
 title: Bug Report Misconfigured Role-Based Access for Project Registration Service in my University's ERP Portal
 slug: misconfigured-role-based-access-erp-portal
 featured: true
