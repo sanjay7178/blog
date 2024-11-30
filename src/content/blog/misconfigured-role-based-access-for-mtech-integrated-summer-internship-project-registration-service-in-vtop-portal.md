@@ -1,7 +1,7 @@
 ---
 author: Immortal
 pubDatetime: 2024-12-01T15:22:00Z
-modDatetime: 2024-12-01T09:12:47.400Z
+modDatetime: 2024-13-01T09:12:47.400Z
 title: Misconfigured Role-Based Access for MTech Integrated Summer Internship Project Registration Service in VTOP Portal
 slug: misconfigured-role-based-access-vtop-portal
 featured: true
