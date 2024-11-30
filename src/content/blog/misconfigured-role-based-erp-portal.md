@@ -14,7 +14,9 @@ description:
     Analysis of a misconfigured role-based access control in the VTOP portal that allowed unauthorized access to other students' summer internship project details.
 ---
 
+
 **Summary:**
+
 
 Misconfigured Role-Based Access for MTech Integrated Summer Internship Project Registration Service in VTOP Portal. I was able to view/access other students' summer internship project details, download the files, and edit them.
 
