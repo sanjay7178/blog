@@ -254,4 +254,9 @@ const { activeNav } = Astro.props;
 
   // Runs on view transitions navigation
   document.addEventListener("astro:after-swap", toggleNav);
+
+  // Add base URL prefix for theme scripts
+  const themeScript = document.createElement("script");
+  themeScript.src = `${import.meta.env.BASE_URL}/toggle-theme.js`;
+  document.body.appendChild(themeScript);
 </script>
