@@ -59,8 +59,8 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL }/favicon.svg` } />
+    <link rel="canonical" href={`${import.meta.env.BASE_URL }`+canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- General Meta Tags -->
@@ -68,7 +68,7 @@ const structuredData = {
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <meta name="author" content={author} />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="sitemap" href={`${import.meta.env.BASE_URL }/sitemap.xml` }  />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content={title} />

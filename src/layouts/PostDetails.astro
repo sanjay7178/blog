@@ -32,10 +32,9 @@ const { Content } = await post.render();
 
 const ogImageUrl = typeof ogImage === "string" ? ogImage : ogImage?.src;
 const ogUrl = new URL(
-  ogImageUrl ?? `/posts/${slugifyStr(title)}.png`,
+  ogImageUrl ?? `${import.meta.env.BASE_URL }`+ `/posts/${slugifyStr(title)}.png`,
   Astro.url.origin
 ).href;
-
 const layoutProps = {
   title: `${title} | ${SITE.title}`,
   author,
@@ -126,8 +125,7 @@ const nextPost =
       data-theme="preferred_color_scheme"
       data-lang="en"
       crossorigin="anonymous"
-      async
-    ></script>
+      async></script>
 
     <hr class="my-6 border-dashed" />
 
@@ -136,7 +134,7 @@ const nextPost =
       {
         prevPost && (
           <a
-            href={`/posts/${prevPost.slug}`}
+            href={`${import.meta.env.BASE_URL}/posts/` + `${prevPost.slug}`}
             class="flex w-full gap-1 hover:opacity-75"
           >
             <svg
@@ -151,10 +149,8 @@ const nextPost =
               stroke-linejoin="round"
               class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left flex-none"
             >
-              <>
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 6l-6 6l6 6" />
-              </>
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M15 6l-6 6l6 6" />
             </svg>
             <div>
               <span>Previous Post</span>
@@ -166,7 +162,7 @@ const nextPost =
       {
         nextPost && (
           <a
-            href={`/posts/${nextPost.slug}`}
+            href={`${import.meta.env.BASE_URL }/posts/`+ `${nextPost.slug}`} 
             class="flex w-full justify-end gap-1 text-right hover:opacity-75 sm:col-start-2"
           >
             <div>
@@ -185,10 +181,8 @@ const nextPost =
               stroke-linejoin="round"
               class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right flex-none"
             >
-              <>
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M9 6l6 6l-6 6" />
-              </>
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M9 6l6 6l-6 6" />
             </svg>
           </a>
         )

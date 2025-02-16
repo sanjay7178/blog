@@ -10,8 +10,11 @@ import getPostsByGroupCondition from "@utils/getPostsByGroupCondition";
 
 // Redirect to 404 page if `showArchives` config is false
 if (!SITE.showArchives) {
-  return Astro.redirect("/404");
+  return Astro.redirect(`${import.meta.env.BASE_URL }/404/`);
 }
+
+
+
 
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 
@@ -60,7 +63,7 @@ const MonthMap: Record<string, string> = {
                   </div>
                   <ul>
                     {monthGroup.map(({ data, slug }) => (
-                      <Card href={`/posts/${slug}`} frontmatter={data} />
+                      <Card href={`${import.meta.env.BASE_URL }/posts/`+ `${slug}`}  frontmatter={data} />
                     ))}
                   </ul>
                 </div>
