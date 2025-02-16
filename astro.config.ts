@@ -8,7 +8,7 @@ import { SITE } from "./src/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://sanjay7178.github.io/blog",
+  site: "https://sanjay7178.github.io",
   base: "blog",
   integrations: [
     tailwind({
