@@ -13,6 +13,7 @@
     "format": "prettier --write . --plugin=prettier-plugin-astro",
     "lint": "eslint ."
   },
+  "packageManager": "pnpm@8.15.1",
   "dependencies": {
     "@astrojs/check": "^0.9.3",
     "@astrojs/rss": "^4.0.7",
