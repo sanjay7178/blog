@@ -1,6 +1,5 @@
 ---
-author:
-  - Immortal
+author: Sai Sanjay Kottakota
 pubDatetime: 2025-07-30T13:28:26Z
 modDatetime: 2025-07-30T13:28:26Z
 title: Swarm External Secrets - A new way to external secrets providers to use secrets to your docker swarm stack
