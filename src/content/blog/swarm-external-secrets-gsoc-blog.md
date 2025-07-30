@@ -1,5 +1,5 @@
 ---
-author: Immortal
+author: Sai Sanjay 
 pubDatetime: 2025-07-30T13:28:26Z
 modDatetime: 2025-07-30T13:28:26Z
 title: Swarm External Secrets - A new way to external secrets providers to use secrets to your docker swarm stack
@@ -13,7 +13,7 @@ tags:
   - vault
   - openbao
   - aws-secrets
-description:
+description: ""
 ---
 
 Here are some rules/recommendations, tips & ticks for creating new posts in AstroPaper blog theme.
