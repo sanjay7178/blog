@@ -25,7 +25,7 @@ Add Docker swarm support to sugar cli
 
 This project will enable Sugar users to manage Docker Swarm clusters directly through Sugar’s command-line interface (CLI). These enhancements will streamline container orchestration workflows and make Sugar a more versatile tool for developers transitioning from development to production environments. New commands will enable users to perform tasks such as initializing, joining, creating, scaling, updating, and inspecting Swarm services with simplified Docker Swarm Node and Secrets Management
 ## Project Information
-
+- Contributor : Sai Sanjay Kottakota
 - Organisation : Open Science Labs
 - Mentors : Ivan Ogasawara , Ana Krelling , Devansh Parmar
 - Repositories : [sugar](https://github.com/sugar-org/sugar) , [swarm-external-secrets](https://github.com/sugar-org/swarm-external-secrets)
