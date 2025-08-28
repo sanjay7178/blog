@@ -13,7 +13,6 @@ tags:
   - podman
   - docker-swarm
   - k8s
-  - 
 description: Add Docker swarm support to sugar cli and develop secrets management docker plugin
 ---
 
