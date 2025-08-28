@@ -134,7 +134,7 @@ const structuredData = {
 
     <ViewTransitions />
 
-    <script is:inline src="/toggle-theme.js" async></script>
+  <script is:inline src={`${import.meta.env.BASE_URL}/toggle-theme.js`} async></script>
   </head>
   <body>
     <slot />
