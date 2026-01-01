@@ -3,46 +3,7 @@ import { SITE } from "@config";
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-
-interface ApiLink {
-  description: string;
-  type: string;
-  link: string;
-  timestamp: string;
-}
-
-interface ApiResponse {
-  data: ApiLink[];
-}
-
-interface GroupedLinks {
-  category: string;
-  items: ApiLink[];
-}
-
-const response = await fetch(
-  "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLgARRBZz3RXfAPImS72w0F4jtOxIF4VegxMr9wL4-yZntOkroJAhlzw2uJLGhlTMPb3N4_SwvS3jkZpGDK4IiKcAZskakgzzPB1Em-i59-ceVqdR9uNce2e5D7Cddx64tYwl6KTQ5BHhA9lnvBMRARXoumAynp5BjoTFpyirwB184OweZ9L2FSiel_6XVzanGUmqObmvIJUu6nv6MRgyPaPzewM6Dwa-JG52eCvgQw7DyvDZNIsioMZtxjGSf-zmtDKui9NgYQ4wJCOSXvIWvz9vn9VzQ&lib=MN-ADcV0xlYzRfC8ALnp5oR_1caAnuAfe"
-);
-const { data } = (await response.json()) as ApiResponse;
-
-// Group links by type
-const groupedLinks: GroupedLinks[] = Object.values(
-  data.reduce(
-    (acc, item) => {
-      const { type } = item;
-      if (!acc[type]) {
-        acc[type] = { category: type, items: [] };
-      }
-      acc[type].items.push(item);
-      return acc;
-    },
-    {} as Record<string, GroupedLinks>
-  )
-).sort((a, b) => {
-  if (a.category.toLowerCase() === "miscellaneous") return 1;
-  if (b.category.toLowerCase() === "miscellaneous") return -1;
-  return a.category.localeCompare(b.category);
-});
+import LinkList from "@components/LinkList";
 
 const title = `Links | ${SITE.title}`;
 ---
@@ -56,40 +17,7 @@ const title = `Links | ${SITE.title}`;
         A curated list of blogs, articles, and resources.
       </p>
 
-      {
-        groupedLinks.map(category => (
-          <div class="mb-10">
-            <h2 class="text-xl font-semibold sm:text-2xl">
-              {category.category}
-            </h2>
-            <ul class="mt-4 pl-0">
-              {category.items.map(item => (
-                <li class="mb-4 flex list-none flex-col sm:flex-row sm:items-start sm:gap-4">
-                  <div class="flex-1">
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="block font-medium text-skin-base hover:text-skin-accent hover:underline sm:inline"
-                    >
-                      {item.description}
-                    </a>
-                  </div>
-                  {item.timestamp && (
-                    <div class="mt-1 whitespace-nowrap text-sm text-skin-base opacity-70 sm:mt-0">
-                      {new Date(item.timestamp).toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
+      <LinkList client:load />
     </section>
   </main>
   <Footer />
@@ -101,8 +29,5 @@ const title = `Links | ${SITE.title}`;
   }
   #links h1 {
     @apply font-bold text-skin-accent;
-  }
-  #links h2 {
-    @apply mt-8 font-bold text-skin-accent;
   }
 </style>
