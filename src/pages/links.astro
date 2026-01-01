@@ -3,7 +3,6 @@ import { SITE } from "@config";
 import Layout from "@layouts/Layout.astro";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
-import Datetime from "@components/Datetime";
 
 interface ApiLink {
   description: string;
@@ -26,7 +25,6 @@ const response = await fetch(
 );
 const { data } = (await response.json()) as ApiResponse;
 
-// Group links by type
 // Group links by type
 const groupedLinks: GroupedLinks[] = Object.values(
   data.reduce(
