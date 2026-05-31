@@ -13,13 +13,13 @@
     "format": "prettier --write . --plugin=prettier-plugin-astro",
     "lint": "eslint ."
   },
-
   "dependencies": {
     "@astrojs/check": "^0.9.3",
     "@astrojs/rss": "^4.0.7",
     "@giscus/react": "^3.0.0",
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^4.16.3",
+    "caniuse-lite": "^1.0.30001793",
     "fuse.js": "^7.0.0",
     "lodash.kebabcase": "^4.1.1",
     "remark-collapse": "^0.1.2",
