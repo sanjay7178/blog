@@ -321,4 +321,110 @@ const nextPost =
   document.addEventListener("astro:after-swap", () =>
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
+
+  /* ========== Image Lightbox ========== */
+  function initLightbox() {
+    const existing = document.getElementById("lightbox-overlay");
+    if (existing) existing.remove();
+
+    const article = document.getElementById("article");
+    if (!article) return;
+
+    const images = Array.from(
+      article.querySelectorAll("img")
+    ).filter(img => !img.closest("a"));
+
+    if (images.length === 0) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "lightbox-overlay";
+    overlay.className = "lightbox-overlay";
+
+    const img = document.createElement("img");
+    img.className = "lightbox-image";
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "lightbox-nav lightbox-prev";
+    prevBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>';
+    prevBtn.setAttribute("aria-label", "Previous image");
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "lightbox-nav lightbox-next";
+    nextBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>';
+    nextBtn.setAttribute("aria-label", "Next image");
+
+    const counter = document.createElement("div");
+    counter.className = "lightbox-counter";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "lightbox-close";
+    closeBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+    closeBtn.setAttribute("aria-label", "Close lightbox");
+
+    overlay.append(img, prevBtn, nextBtn, counter, closeBtn);
+    document.body.appendChild(overlay);
+
+    let currentIndex = -1;
+    let visible = false;
+
+    function show(index) {
+      currentIndex = index;
+      img.src = images[index].src;
+      img.alt = images[index].alt || "";
+      counter.textContent = `${index + 1} / ${images.length}`;
+      overlay.classList.add("lightbox-visible");
+      document.body.style.overflow = "hidden";
+      visible = true;
+      prevBtn.style.display = images.length > 1 ? "" : "none";
+      nextBtn.style.display = images.length > 1 ? "" : "none";
+    }
+
+    function hide() {
+      overlay.classList.remove("lightbox-visible");
+      document.body.style.overflow = "";
+      visible = false;
+    }
+
+    function next() {
+      show((currentIndex + 1) % images.length);
+    }
+
+    function prev() {
+      show((currentIndex - 1 + images.length) % images.length);
+    }
+
+    images.forEach((image, i) => {
+      image.style.cursor = "zoom-in";
+      image.addEventListener("click", e => {
+        e.preventDefault();
+        show(i);
+      });
+    });
+
+    overlay.addEventListener("click", e => {
+      if (e.target === overlay) hide();
+    });
+
+    closeBtn.addEventListener("click", hide);
+    prevBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      prev();
+    });
+    nextBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      next();
+    });
+
+    document.addEventListener("keydown", e => {
+      if (!visible) return;
+      if (e.key === "Escape") hide();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    });
+  }
+
+  initLightbox();
 </script>

@@ -120,6 +120,32 @@
   }
 }
 
+/* ===== Image Lightbox ===== */
+.lightbox-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 transition-opacity duration-300 pointer-events-none;
+}
+.lightbox-overlay.lightbox-visible {
+  @apply opacity-100 pointer-events-auto;
+}
+.lightbox-image {
+  @apply max-h-[90vh] max-w-[90vw] object-contain rounded-lg;
+}
+.lightbox-nav {
+  @apply absolute top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/25;
+}
+.lightbox-prev {
+  @apply left-4;
+}
+.lightbox-next {
+  @apply right-4;
+}
+.lightbox-close {
+  @apply absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/25;
+}
+.lightbox-counter {
+  @apply absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur;
+}
+
 @layer components {
   .display-none {
     @apply hidden;
