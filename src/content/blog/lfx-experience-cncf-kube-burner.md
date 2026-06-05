@@ -31,10 +31,15 @@ During my Master's degree, I stumbled upon Docker and quickly fell in love with 
 
 My thesis took it further. I built a Kubernetes-Based Secure Browser Isolation Platform on a bare-metal RKE2 cluster. I got to know about [kcli](https://github.com/karmab/kcli) , it helped me provision production-grade Kubernetes clusters from scratch. With the cluster up, I used `client-go`, Istio, MetalLB, and Guacd for scalable RDP, then validated performance with Playwright stress tests, measuring HPA/VPA scaling events, etcd/kube-apiserver resource usage, and P99 WebSocket RTT.
 
-[_Some of the performance benchmarks from my thesis_](@assets/images/master-thesis-performance-benchmarks.png)
+<i>
+<a href="/blog/images/master-thesis-performance-benchmarks.png" target="_blank">
+Some of the performance benchmarks from my thesis
+</a>
+</i>
 
-![one does not simply learn kubernetes](https://i.imgflip.com/1bij.jpg)
-_One does not simply "just use Kubernetes" — ask me how I know_
+
+<!-- ![one does not simply learn kubernetes](https://i.imgflip.com/1bij.jpg)
+_One does not simply "just use Kubernetes" — ask me how I know_ -->
 
 ---
 
