@@ -18,6 +18,8 @@
     "@astrojs/rss": "^4.0.7",
     "@giscus/react": "^3.0.0",
     "@resvg/resvg-js": "^2.6.2",
+    "@sentry/astro": "^10.55.0",
+    "@spotlightjs/astro": "^3.2.6",
     "astro": "^4.16.3",
     "caniuse-lite": "^1.0.30001793",
     "fuse.js": "^7.0.0",
