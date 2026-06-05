@@ -14,7 +14,7 @@ tags:
   - kubernetes
   - performance-testing
   - keda
-description: How I went from a Kubernetes beginner running bare-metal clusters to contributing a full KEDA performance-testing feature to kube-burner as an LFX mentee.
+description: How I went from a Kubernetes beginner running bare-metal clusters to contributing a performance-testing features to kube-burner as an LFX mentee.
 ---
 
 ![](@assets/images/kube-burner-lfx.png)
