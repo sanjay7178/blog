@@ -24,7 +24,10 @@ const { activeNav } = Astro.props;
               height={LOGO_IMAGE.height}
             />
           ) : (
-            SITE.title
+            <>
+              Immortal
+              <span class="logo-badge">blog</span>
+            </>
           )
         }
       </a>
@@ -174,10 +177,13 @@ const { activeNav } = Astro.props;
     @apply mx-auto flex max-w-3xl flex-col items-center justify-between sm:flex-row;
   }
   .top-nav-wrap {
-    @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:py-8;
+    @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:py-6;
   }
   .logo {
-    @apply absolute py-1 text-xl font-semibold sm:static sm:text-2xl;
+    @apply absolute flex items-center py-1 font-sans text-xl font-medium sm:static sm:text-2xl;
+  }
+  .logo-badge {
+    @apply ml-1.5 inline-block rotate-12 rounded-sm bg-skin-accent px-1.5 py-0.5 text-[0.65rem] font-medium leading-none text-skin-inverted;
   }
   .hamburger-menu {
     @apply self-end p-2 sm:hidden;
@@ -196,7 +202,7 @@ const { activeNav } = Astro.props;
     @apply col-span-2 flex items-center justify-center;
   }
   nav ul li a {
-    @apply w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1;
+    @apply w-full px-4 py-3 text-center text-sm hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1;
   }
   nav ul li:nth-last-child(2) a {
     @apply w-auto;
@@ -206,7 +212,7 @@ const { activeNav } = Astro.props;
     @apply col-span-1;
   }
   nav .active {
-    @apply underline decoration-wavy decoration-2 underline-offset-4;
+    @apply text-skin-base underline decoration-skin-accent decoration-1 underline-offset-8;
   }
   nav a.active svg {
     @apply fill-skin-accent;
@@ -262,9 +268,4 @@ const { activeNav } = Astro.props;
 
   // Runs on view transitions navigation
   document.addEventListener("astro:after-swap", toggleNav);
-
-  // Add base URL prefix for theme scripts
-  const themeScript = document.createElement("script");
-  themeScript.src = `${import.meta.env.BASE_URL}/toggle-theme.js`;
-  document.body.appendChild(themeScript);
 </script>

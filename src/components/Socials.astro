@@ -5,14 +5,17 @@ import socialIcons from "@assets/socialIcons";
 
 export interface Props {
   centered?: boolean;
+  exclude?: string[];
 }
 
-const { centered = false } = Astro.props;
+const { centered = false, exclude = [] } = Astro.props;
 ---
 
 <div class={`social-icons ${centered ? "flex" : ""}`}>
   {
-    SOCIALS.filter(social => social.active).map(social => (
+    SOCIALS.filter(
+      social => social.active && !exclude.includes(social.name)
+    ).map(social => (
       <LinkButton
         href={social.href}
         className="link-button"
@@ -30,6 +33,6 @@ const { centered = false } = Astro.props;
     @apply flex-wrap justify-center gap-1;
   }
   .link-button {
-    @apply p-2 hover:rotate-6 sm:p-1;
+    @apply p-2 text-skin-muted hover:text-skin-accent sm:p-1;
   }
 </style>

@@ -43,6 +43,10 @@ function reflectPreference() {
     document
       .querySelector("meta[name='theme-color']")
       ?.setAttribute("content", bgColor);
+
+    document
+      .querySelector("meta[name='color-scheme']")
+      ?.setAttribute("content", themeValue);
   }
 }
 

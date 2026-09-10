@@ -3,26 +3,61 @@
 @tailwind utilities;
 
 @layer base {
-  :root,
+  :root {
+    --color-fill: 249, 250, 251;
+    --color-text-base: 17, 24, 28;
+    --color-text-muted: 100, 116, 124;
+    --color-accent: 0, 122, 122;
+    --color-card: 243, 244, 246;
+    --color-card-muted: 229, 231, 235;
+    --color-border: 226, 232, 234;
+    --scrollbar-thumb: rgb(156, 163, 175);
+    --scrollbar-track: rgb(243, 244, 246);
+    color-scheme: light dark;
+    accent-color: rgb(var(--color-accent));
+  }
+
   html[data-theme="light"] {
-    --color-fill: 251, 254, 251;
-    --color-text-base: 40, 39, 40;
-    --color-accent: 0, 108, 172;
-    --color-card: 230, 230, 230;
-    --color-card-muted: 205, 205, 205;
-    --color-border: 236, 233, 233;
+    --color-fill: 249, 250, 251;
+    --color-text-base: 17, 24, 28;
+    --color-text-muted: 100, 116, 124;
+    --color-accent: 0, 122, 122;
+    --color-card: 243, 244, 246;
+    --color-card-muted: 229, 231, 235;
+    --color-border: 226, 232, 234;
+    --scrollbar-thumb: rgb(156, 163, 175);
+    --scrollbar-track: rgb(243, 244, 246);
+    color-scheme: light;
   }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --color-fill: 22, 34, 44;
+      --color-text-base: 236, 241, 243;
+      --color-text-muted: 148, 163, 172;
+      --color-accent: 5, 206, 145;
+      --color-card: 29, 42, 53;
+      --color-card-muted: 42, 58, 70;
+      --color-border: 42, 58, 70;
+      --scrollbar-thumb: rgb(71, 85, 99);
+      --scrollbar-track: rgb(29, 42, 53);
+      color-scheme: dark;
+    }
+  }
+
   html[data-theme="dark"] {
-    --color-fill: 16, 23, 42; /* higher contrast bgColor */
-    --color-fill: 33, 39, 55;
-    --color-text-base: 234, 237, 243;
-    --color-accent: 255, 107, 1;
-    --color-card: 27, 39, 70;
-    --color-card-muted: 138, 51, 2;
-    --color-border: 171, 75, 8;
+    --color-fill: 22, 34, 44;
+    --color-text-base: 236, 241, 243;
+    --color-text-muted: 148, 163, 172;
+    --color-accent: 5, 206, 145;
+    --color-card: 29, 42, 53;
+    --color-card-muted: 42, 58, 70;
+    --color-border: 42, 58, 70;
+    --scrollbar-thumb: rgb(71, 85, 99);
+    --scrollbar-track: rgb(29, 42, 53);
+    color-scheme: dark;
   }
-  
-  
+
   #sun-svg,
   html[data-theme="dark"] #moon-svg {
     display: none;
@@ -31,15 +66,57 @@
   html[data-theme="dark"] #sun-svg {
     display: block;
   }
-  body {
-    @apply flex min-h-[100svh] flex-col bg-skin-fill font-mono text-skin-base selection:bg-skin-accent/70 selection:text-skin-inverted;
+
+  html {
+    @apply overflow-y-scroll bg-skin-fill;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
+
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+    }
+  }
+
+  body {
+    @apply relative flex min-h-[100svh] flex-col bg-skin-fill font-sans text-skin-base;
+    font-size-adjust: from-font;
+    background-image: radial-gradient(
+      ellipse 90% 50% at 50% -20%,
+      rgba(var(--color-accent), 0.1),
+      transparent 58%
+    );
+  }
+
+  ::selection {
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-fill));
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-tight text-balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   section,
   footer {
     @apply mx-auto max-w-3xl px-4;
   }
   a {
-    @apply outline-2 outline-offset-1 outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
+    @apply outline-2 outline-offset-2 outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
   }
   svg {
     @apply inline-block h-6 w-6 fill-skin-base group-hover:fill-skin-accent;
@@ -48,7 +125,7 @@
     @apply inline-block h-6 w-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110;
   }
   .prose {
-    @apply prose-headings:!mb-3 prose-headings:!text-skin-base prose-h3:italic prose-p:!text-skin-base prose-a:!text-skin-base prose-a:!decoration-dashed prose-a:underline-offset-8 hover:prose-a:text-skin-accent prose-blockquote:!border-l-skin-accent/50 prose-blockquote:opacity-80 prose-figcaption:!text-skin-base prose-figcaption:opacity-70 prose-strong:!text-skin-base prose-code:rounded prose-code:bg-skin-card/75 prose-code:p-1 prose-code:before:!content-none prose-code:after:!content-none prose-ol:!text-skin-base prose-ul:overflow-x-clip prose-ul:!text-skin-base prose-li:marker:!text-skin-accent prose-table:text-skin-base prose-th:border prose-th:border-skin-line prose-td:border prose-td:border-skin-line prose-img:!my-2 prose-img:mx-auto prose-img:border-2 prose-img:border-skin-line prose-hr:!border-skin-line;
+    @apply prose-headings:font-serif prose-headings:!mb-3 prose-headings:!font-normal prose-headings:!tracking-tight prose-headings:!text-skin-base prose-h3:italic prose-p:!text-skin-base prose-a:!text-skin-accent prose-a:!decoration-dashed prose-a:underline-offset-4 hover:prose-a:opacity-80 prose-blockquote:!border-l-skin-accent/50 prose-blockquote:opacity-80 prose-figcaption:!text-skin-muted prose-strong:!text-skin-base prose-code:rounded-sm prose-code:bg-skin-card prose-code:px-1 prose-code:py-0.5 prose-code:before:!content-none prose-code:after:!content-none prose-ol:!text-skin-base prose-ul:overflow-x-clip prose-ul:!text-skin-base prose-li:marker:!text-skin-accent prose-table:text-skin-base prose-th:border prose-th:border-skin-line prose-td:border prose-td:border-skin-line prose-img:!my-2 prose-img:mx-auto prose-img:border prose-img:border-skin-line prose-hr:!border-skin-line;
   }
   .prose a {
     @apply break-words hover:!text-skin-accent;
@@ -71,32 +148,6 @@
     @apply hidden;
   }
 
-  /* ===== scrollbar ===== */
-  html {
-    overflow-y: scroll;
-  }
-
-  /* width */
-  ::-webkit-scrollbar {
-    @apply w-3;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    @apply bg-skin-fill;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    @apply bg-skin-card;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-skin-card-muted;
-  }
-
-  /* ===== Code Blocks & Syntax Highlighting ===== */
   pre:has(code) {
     @apply border border-skin-line;
   }
@@ -109,7 +160,6 @@
     white-space: pre;
   }
 
-  /* Apply Dark Theme (if multi-theme specified) */
   html[data-theme="dark"] pre:has(code),
   html[data-theme="dark"] pre:has(code) span {
     color: var(--shiki-dark) !important;
@@ -125,18 +175,21 @@
     @apply hidden;
   }
   .focus-outline {
-    @apply outline-2 outline-offset-1 outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
+    @apply outline-2 outline-offset-2 outline-skin-fill focus-visible:no-underline focus-visible:outline-dashed;
+  }
+  .search-field {
+    @apply w-full rounded-md border border-skin-accent/35 bg-transparent px-4 py-2.5 text-skin-base placeholder:italic placeholder:text-skin-muted focus:border-skin-accent focus:outline-none;
   }
 
   /* ===== Image Lightbox ===== */
   .lightbox-overlay {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 transition-opacity duration-300 pointer-events-none;
+    @apply pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-black/90 opacity-0 transition-opacity duration-300;
   }
   .lightbox-overlay.lightbox-visible {
-    @apply opacity-100 pointer-events-auto;
+    @apply pointer-events-auto opacity-100;
   }
   .lightbox-image {
-    @apply max-h-[90vh] max-w-[90vw] object-contain rounded-lg;
+    @apply max-h-[90vh] max-w-[90vw] rounded-sm object-contain;
   }
   .lightbox-nav {
     @apply absolute top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white backdrop-blur transition-colors hover:bg-white/25;
@@ -152,5 +205,18 @@
   }
   .lightbox-counter {
     @apply absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-1.5 text-sm text-white backdrop-blur;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

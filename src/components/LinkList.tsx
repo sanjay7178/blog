@@ -75,7 +75,7 @@ const LinkList = () => {
         <div>
             {groupedLinks.map((category) => (
                 <div key={category.category} className="mb-10">
-                    <h2 className="text-xl font-semibold sm:text-2xl mb-4 text-skin-accent">
+                    <h2 className="mb-4 font-serif text-xl font-normal tracking-tight sm:text-2xl">
                         {category.category}
                     </h2>
                     <ul className="pl-0">

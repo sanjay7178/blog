@@ -1,0 +1,50 @@
+---
+import { SOCIALS } from "@config";
+import Socials from "./Socials.astro";
+
+const mail = SOCIALS.find(social => social.name === "Mail" && social.active);
+---
+
+{
+  mail && (
+    <aside class="side-rail side-rail-left" aria-label="Email">
+      <a href={mail.href}>{mail.href.replace("mailto:", "")}</a>
+    </aside>
+  )
+}
+<aside class="side-rail side-rail-right" aria-label="Social links">
+  <Socials exclude={["Mail"]} />
+</aside>
+
+<style>
+  .side-rail {
+    display: none;
+  }
+
+  @media (min-width: 1120px) {
+    .side-rail {
+      @apply fixed top-0 z-20 hidden h-screen flex-col items-center justify-end gap-4 pb-8;
+    }
+    .side-rail-left,
+    .side-rail-right {
+      display: flex;
+    }
+    .side-rail-left {
+      left: 1.25rem;
+    }
+    .side-rail-right {
+      right: 1.25rem;
+    }
+    .side-rail-left a {
+      @apply mb-24 origin-center -rotate-90 whitespace-nowrap text-sm tracking-wide text-skin-muted hover:text-skin-accent;
+    }
+    .side-rail-right :global(.social-icons) {
+      @apply flex flex-col items-center gap-2;
+    }
+    .side-rail::after {
+      content: "";
+      @apply h-20 w-px;
+      background-color: rgb(var(--color-text-base));
+    }
+  }
+</style>

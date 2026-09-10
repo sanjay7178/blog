@@ -7,7 +7,7 @@ export default async (post: CollectionEntry<"blog">) => {
   return satori(
     <div
       style={{
-        background: "#fefbfb",
+        background: "#16222c",
         width: "100%",
         height: "100%",
         display: "flex",
@@ -17,80 +17,40 @@ export default async (post: CollectionEntry<"blog">) => {
     >
       <div
         style={{
-          position: "absolute",
-          top: "-1px",
-          right: "-1px",
-          border: "4px solid #000",
-          background: "#ecebeb",
-          opacity: "0.9",
-          borderRadius: "4px",
           display: "flex",
-          justifyContent: "center",
-          margin: "2.5rem",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          margin: "72px",
           width: "88%",
-          height: "80%",
-        }}
-      />
-
-      <div
-        style={{
-          border: "4px solid #000",
-          background: "#fefbfb",
-          borderRadius: "4px",
-          display: "flex",
-          justifyContent: "center",
-          margin: "2rem",
-          width: "88%",
-          height: "80%",
+          height: "78%",
+          borderLeft: "2px solid #05ce91",
+          paddingLeft: "48px",
         }}
       >
+        <p
+          style={{
+            fontSize: 68,
+            fontFamily: "Instrument Serif",
+            color: "#e4e4e7",
+            lineHeight: 1.15,
+            maxHeight: "78%",
+            overflow: "hidden",
+          }}
+        >
+          {post.data.title}
+        </p>
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
             justifyContent: "space-between",
-            margin: "20px",
-            width: "90%",
-            height: "90%",
+            width: "100%",
+            fontSize: 24,
+            color: "#94a3b8",
+            fontFamily: "Jost",
           }}
         >
-          <p
-            style={{
-              fontSize: 72,
-              fontWeight: "bold",
-              maxHeight: "84%",
-              overflow: "hidden",
-            }}
-          >
-            {post.data.title}
-          </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              marginBottom: "8px",
-              fontSize: 28,
-            }}
-          >
-            <span>
-              by{" "}
-              <span
-                style={{
-                  color: "transparent",
-                }}
-              >
-                "
-              </span>
-              <span style={{ overflow: "hidden", fontWeight: "bold" }}>
-                {post.data.author}
-              </span>
-            </span>
-
-            <span style={{ overflow: "hidden", fontWeight: "bold" }}>
-              {SITE.title}
-            </span>
-          </div>
+          <span>{post.data.author}</span>
+          <span style={{ color: "#05ce91" }}>{SITE.title}</span>
         </div>
       </div>
     </div>,
@@ -99,7 +59,7 @@ export default async (post: CollectionEntry<"blog">) => {
       height: 630,
       embedFont: true,
       fonts: (await loadGoogleFonts(
-        post.data.title + post.data.author + SITE.title + "by"
+        post.data.title + post.data.author + SITE.title
       )) as FontOptions[],
     }
   );

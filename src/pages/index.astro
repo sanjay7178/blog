@@ -14,8 +14,6 @@ const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
-
 const socialCount = SOCIALS.filter(social => social.active).length;
 ---
 
@@ -23,42 +21,66 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   <Header />
   <main id="main-content">
     <section id="hero">
-      <h1>Immortal's Blog</h1>
-      <a
-        target="_blank"
-        href={`${import.meta.env.BASE_URL}/rss.xml`}
-        class="rss-link"
-        aria-label="rss feed"
-        title="RSS Feed"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon"
-          ><path
-            d="M19 20.001C19 11.729 12.271 5 4 5v2c7.168 0 13 5.832 13 13.001h2z"
-          ></path><path
-            d="M12 20.001h2C14 14.486 9.514 10 4 10v2c4.411 0 8 3.589 8 8.001z"
-          ></path><circle cx="6" cy="18" r="2"></circle>
-        </svg>
-        <span class="sr-only">RSS Feed</span>
-      </a>
+      <div class="hero-heading">
+        <h1>Immortal's <span>Blog</span></h1>
+        <a
+          target="_blank"
+          href={`${import.meta.env.BASE_URL}/rss.xml`}
+          class="rss-link"
+          aria-label="rss feed"
+          title="RSS Feed"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon"
+            ><path
+              d="M19 20.001C19 11.729 12.271 5 4 5v2c7.168 0 13 5.832 13 13.001h2z"
+            ></path><path
+              d="M12 20.001h2C14 14.486 9.514 10 4 10v2c4.411 0 8 3.589 8 8.001z"
+            ></path><circle cx="6" cy="18" r="2"></circle>
+          </svg>
+          <span class="sr-only">RSS Feed</span>
+        </a>
+      </div>
 
       <p>
-        Technology enthusiast geek for building in Golang, JS frameworks,
-        continuous learning in multimodal AI, and a few bits of security.
+        Hello — notes on Golang, JS frameworks, multimodal AI, and a few bits of
+        security.
       </p>
       <p>
-        <!-- Read the blog posts or check
-        <LinkButton
-          className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
-          href="https://github.com/satnaing/astro-paper#readme"
-        >
-          README
-        </LinkButton> for more info. -->
+        You can follow me on
+        <a
+          class="text-skin-accent hover:opacity-80"
+          href="https://github.com/sanjay7178/"
+          target="_blank"
+          rel="noopener noreferrer">Github</a
+        >.
       </p>
+
+      <form
+        class="home-search"
+        action={`${import.meta.env.BASE_URL}/search/`}
+        method="get"
+        role="search"
+      >
+        <input
+          class="search-field"
+          type="search"
+          name="q"
+          placeholder="Search for anything..."
+          aria-label="Search posts"
+        />
+        <button type="submit" class="search-submit" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            ><path
+              d="M19.023 16.977a35.13 35.13 0 0 1-1.367-1.384c-.372-.378-.596-.653-.596-.653l-2.8-1.337A6.962 6.962 0 0 0 16 9c0-3.859-3.14-7-7-7S2 5.141 2 9s3.14 7 7 7c1.763 0 3.37-.66 4.603-1.739l1.337 2.8s.275.224.653.596c.387.363.896.854 1.384 1.367l1.358 1.392.604.646 2.121-2.121-.646-.604c-.379-.372-.885-.866-1.391-1.36zM9 14c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z"
+            ></path>
+          </svg>
+        </button>
+      </form>
       {
         // only display if at least one social link is enabled
         socialCount > 0 && (
           <div class="social-wrapper">
-            <div class="social-links">Social Links:</div>
+            <div class="social-links">Elsewhere</div>
             <Socials />
           </div>
         )
@@ -71,7 +93,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       featuredPosts.length > 0 && (
         <>
           <section id="featured">
-            <h2>Featured</h2>
+            <h2>Featured Posts</h2>
             <ul>
               {featuredPosts.map(({ data, slug }) => (
                 <Card
@@ -82,17 +104,17 @@ const socialCount = SOCIALS.filter(social => social.active).length;
               ))}
             </ul>
           </section>
-          {recentPosts.length > 0 && <Hr />}
+          {sortedPosts.length > 0 && <Hr />}
         </>
       )
     }
 
     {
-      recentPosts.length > 0 && (
+      sortedPosts.length > 0 && (
         <section id="recent-posts">
-          <h2>Recent Posts</h2>
+          <h2>All Posts</h2>
           <ul>
-            {recentPosts.map(
+            {sortedPosts.map(
               ({ data, slug }, index) =>
                 index < SITE.postPerIndex && (
                   <Card
@@ -125,37 +147,57 @@ const socialCount = SOCIALS.filter(social => social.active).length;
 <style>
   /* ===== Hero Section ===== */
   #hero {
-    @apply pb-6 pt-8;
+    @apply pb-8 pt-10;
+  }
+  .hero-heading {
+    @apply mb-5 flex items-baseline gap-3;
   }
   #hero h1 {
-    @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+    @apply my-0 font-sans text-4xl font-bold tracking-tight sm:text-5xl;
+  }
+  #hero h1 span {
+    @apply text-skin-accent;
   }
   #hero .rss-link {
-    @apply mb-6;
+    @apply text-skin-muted transition-colors hover:text-skin-accent;
   }
   #hero .rss-icon {
-    @apply mb-2 h-6 w-6 scale-110 fill-skin-accent sm:mb-3 sm:scale-125;
+    @apply mb-0 h-5 w-5 fill-current;
   }
   #hero p {
-    @apply my-2;
+    @apply my-2 max-w-xl text-skin-base;
+  }
+  .home-search {
+    @apply relative my-6 max-w-xl;
+  }
+  .search-submit {
+    @apply absolute inset-y-0 right-0 flex items-center px-3 text-skin-accent;
+  }
+  .search-submit svg {
+    @apply h-5 w-5 fill-current;
   }
   .social-wrapper {
-    @apply mt-4 flex flex-col sm:flex-row sm:items-center;
+    @apply mt-6 flex flex-col sm:flex-row sm:items-center;
+  }
+  @media (min-width: 1120px) {
+    .social-wrapper {
+      display: none;
+    }
   }
   .social-links {
-    @apply mb-1 mr-2 whitespace-nowrap sm:mb-0;
+    @apply mb-1 mr-3 text-xs uppercase tracking-[0.18em] text-skin-muted sm:mb-0;
   }
 
   /* ===== Featured & Recent Posts Sections ===== */
   #featured,
   #recent-posts {
-    @apply pb-6 pt-12;
+    @apply pb-6 pt-10;
   }
   #featured h2,
   #recent-posts h2 {
-    @apply text-2xl font-semibold tracking-wide;
+    @apply mb-4 font-sans text-2xl font-medium tracking-normal;
   }
   .all-posts-btn-wrapper {
-    @apply my-8 text-center;
+    @apply my-10 text-center text-sm tracking-wide;
   }
 </style>
