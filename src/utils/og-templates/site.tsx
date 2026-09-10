@@ -1,85 +1,103 @@
 import satori from "satori";
 import { SITE } from "@config";
 import loadGoogleFonts, { type FontOptions } from "../loadGoogleFont";
+import { BrandMark, OG } from "./brand";
 
 export default async () => {
+  const host = new URL(SITE.website).hostname;
+  const fontText = `Immortal blog Immortal's Blog ${SITE.desc} ${host} Writing`;
+
   return satori(
     <div
       style={{
-        background: "#16222c",
         width: "100%",
         height: "100%",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        position: "relative",
+        backgroundColor: OG.bg,
+        backgroundImage:
+          "radial-gradient(ellipse 80% 70% at 0% 100%, rgba(5, 206, 145, 0.18), transparent 55%), radial-gradient(ellipse 60% 50% at 100% 0%, rgba(5, 206, 145, 0.2), transparent 50%)",
       }}
     >
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          margin: "72px",
-          width: "88%",
-          height: "78%",
-          borderLeft: "2px solid #05ce91",
-          paddingLeft: "48px",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "100%",
+          padding: "56px 72px",
         }}
       >
-        <p
+        <BrandMark />
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", alignItems: "baseline" }}>
+            <span
+              style={{
+                fontFamily: "Jost",
+                fontWeight: 700,
+                fontSize: 84,
+                color: OG.text,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+              }}
+            >
+              Immortal's{" "}
+            </span>
+            <span
+              style={{
+                fontFamily: "Jost",
+                fontWeight: 700,
+                fontSize: 84,
+                color: OG.accent,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+              }}
+            >
+              Blog
+            </span>
+          </div>
+          {SITE.desc ? (
+            <div
+              style={{
+                display: "flex",
+                marginTop: 24,
+                maxWidth: 900,
+                fontFamily: "Jost",
+                fontSize: 30,
+                color: OG.muted,
+                lineHeight: 1.4,
+              }}
+            >
+              {SITE.desc}
+            </div>
+          ) : null}
+        </div>
+
+        <div
           style={{
-            fontSize: 22,
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-            color: "#05ce91",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            borderTop: `1px solid ${OG.line}`,
+            paddingTop: 22,
             fontFamily: "Jost",
-            marginBottom: "16px",
-          }}
-        >
-          Writing
-        </p>
-        <p
-          style={{
-            fontSize: 84,
-            fontFamily: "Instrument Serif",
-            color: "#e4e4e7",
-            lineHeight: 1.1,
-          }}
-        >
-          {SITE.title}
-        </p>
-        {SITE.desc ? (
-          <p
-            style={{
-              fontSize: 28,
-              color: "#a1a1aa",
-              fontFamily: "Jost",
-              marginTop: "20px",
-            }}
-          >
-            {SITE.desc}
-          </p>
-        ) : null}
-        <p
-          style={{
             fontSize: 22,
-            color: "#71717a",
-            fontFamily: "Jost",
-            marginTop: "40px",
+            color: OG.muted,
           }}
         >
-          {new URL(SITE.website).hostname}
-        </p>
+          <span>{host}</span>
+          <span style={{ color: OG.accent, fontWeight: 600 }}>Writing</span>
+        </div>
       </div>
     </div>,
     {
       width: 1200,
       height: 630,
       embedFont: true,
-      fonts: (await loadGoogleFonts(
-        SITE.title + SITE.desc + SITE.website + "Writing"
-      )) as FontOptions[],
+      fonts: (await loadGoogleFonts(fontText)) as FontOptions[],
     }
   );
 };

@@ -2,17 +2,38 @@ import satori from "satori";
 import type { CollectionEntry } from "astro:content";
 import { SITE } from "@config";
 import loadGoogleFonts, { type FontOptions } from "../loadGoogleFont";
+import { BrandMark, OG, titleFontSize, truncate } from "./brand";
 
 export default async (post: CollectionEntry<"blog">) => {
+  const { title, author, description, tags, pubDatetime } = post.data;
+  const date = new Date(pubDatetime).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const summary = truncate(description ?? "", 150);
+  const shownTags = (tags ?? []).slice(0, 4);
+  const fontText = [
+    title,
+    author,
+    summary,
+    date,
+    SITE.title,
+    "Immortal",
+    "blog",
+    shownTags.map(tag => `#${tag}`).join(" "),
+  ].join(" ");
+
   return satori(
     <div
       style={{
-        background: "#16222c",
         width: "100%",
         height: "100%",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        position: "relative",
+        backgroundColor: OG.bg,
+        backgroundImage:
+          "radial-gradient(ellipse 70% 80% at 100% -10%, rgba(5, 206, 145, 0.22), transparent 55%)",
       }}
     >
       <div
@@ -20,37 +41,105 @@ export default async (post: CollectionEntry<"blog">) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          margin: "72px",
-          width: "88%",
-          height: "78%",
-          borderLeft: "2px solid #05ce91",
-          paddingLeft: "48px",
+          width: "100%",
+          height: "100%",
+          padding: "56px 72px",
         }}
       >
-        <p
-          style={{
-            fontSize: 68,
-            fontFamily: "Instrument Serif",
-            color: "#e4e4e7",
-            lineHeight: 1.15,
-            maxHeight: "78%",
-            overflow: "hidden",
-          }}
-        >
-          {post.data.title}
-        </p>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
             width: "100%",
-            fontSize: 24,
-            color: "#94a3b8",
-            fontFamily: "Jost",
           }}
         >
-          <span>{post.data.author}</span>
-          <span style={{ color: "#05ce91" }}>{SITE.title}</span>
+          <BrandMark />
+          <span
+            style={{
+              fontFamily: "Jost",
+              fontSize: 22,
+              color: OG.muted,
+            }}
+          >
+            {date}
+          </span>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              fontFamily: "Instrument Serif",
+              fontSize: titleFontSize(title),
+              color: OG.text,
+              lineHeight: 1.15,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            {title}
+          </div>
+          {summary ? (
+            <div
+              style={{
+                display: "flex",
+                marginTop: 22,
+                fontFamily: "Jost",
+                fontSize: 26,
+                color: OG.muted,
+                lineHeight: 1.4,
+              }}
+            >
+              {summary}
+            </div>
+          ) : null}
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+          }}
+        >
+          {shownTags.length > 0 && (
+            <div style={{ display: "flex", marginBottom: 28 }}>
+              {shownTags.map(tag => (
+                <div
+                  style={{
+                    display: "flex",
+                    marginRight: 12,
+                    border: "1px solid rgba(5, 206, 145, 0.45)",
+                    color: OG.accent,
+                    fontFamily: "Jost",
+                    fontSize: 20,
+                    padding: "8px 16px",
+                    borderRadius: 999,
+                  }}
+                >
+                  #{tag}
+                </div>
+              ))}
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              borderTop: `1px solid ${OG.line}`,
+              paddingTop: 22,
+              fontFamily: "Jost",
+              fontSize: 22,
+              color: OG.muted,
+            }}
+          >
+            <span>{author}</span>
+            <span style={{ color: OG.accent, fontWeight: 600 }}>
+              Immortal's Blog
+            </span>
+          </div>
         </div>
       </div>
     </div>,
@@ -58,9 +147,7 @@ export default async (post: CollectionEntry<"blog">) => {
       width: 1200,
       height: 630,
       embedFont: true,
-      fonts: (await loadGoogleFonts(
-        post.data.title + post.data.author + SITE.title
-      )) as FontOptions[],
+      fonts: (await loadGoogleFonts(fontText)) as FontOptions[],
     }
   );
 };

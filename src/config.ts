@@ -5,9 +5,9 @@ export const SITE: Site = {
   website: "https://sanjay7178.github.io/blog", // replace this with your deployed domain
   author: "Immortal",
   profile: "https://sanjay7178.github.io/",
-  desc: "",
-  title: "Blog",
-  ogImage: "astropaper-og.jpg",
+  desc: "Notes on Golang, JS frameworks, multimodal AI, and a few bits of security.",
+  title: "Immortal's Blog",
+  ogImage: "og.png",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 3,

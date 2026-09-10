@@ -62,6 +62,12 @@ async function loadGoogleFonts(
       weight: 600,
       style: "normal",
     },
+    {
+      name: "Jost",
+      font: "Jost:wght@700",
+      weight: 700,
+      style: "normal",
+    },
   ];
 
   const fonts = await Promise.all(
