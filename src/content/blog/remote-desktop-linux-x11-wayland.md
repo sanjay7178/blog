@@ -13,6 +13,8 @@ tags:
   - remote-desktop
   - open-source
 description: How X11 and Wayland shape remote desktop support, why compositors and desktop integration matter, and what projects like Termland do differently.
+ogImage: images/remote-desktop-on-linux.png
+ogImageAlt: "remote-dekstop-on-linux-cover-image"
 ---
 
 I started looking into this while working on [Termland](https://github.com/jboero/termland), a remote desktop project that creates headless Wayland sessions. What seemed like a question about connecting a client to a server turned into a much larger question: who actually owns the desktop that I am trying to access?

@@ -33,13 +33,16 @@ const {
 const { Content } = await post.render();
 
 const ogImageUrl = typeof ogImage === "string" ? ogImage : ogImage?.src;
-const imageBaseUrl = new URL(
-  import.meta.env.BASE_URL,
-  Astro.site ?? Astro.url.origin
-);
+const imageBaseUrl = new URL(import.meta.env.BASE_URL, Astro.url.origin);
 if (!imageBaseUrl.pathname.endsWith("/")) imageBaseUrl.pathname += "/";
-const coverImageUrl = ogImageUrl
-  ? new URL(ogImageUrl, imageBaseUrl).href
+const resolvedCoverImage = ogImageUrl
+  ? new URL(ogImageUrl, imageBaseUrl)
+  : undefined;
+const isRemoteCoverImage = ogImageUrl && /^(https?:)?\/\//i.test(ogImageUrl);
+const coverImageUrl = resolvedCoverImage
+  ? isRemoteCoverImage
+    ? resolvedCoverImage.href
+    : `${resolvedCoverImage.pathname}${resolvedCoverImage.search}${resolvedCoverImage.hash}`
   : undefined;
 const coverImageAlt = ogImageAlt ?? title;
 const ogUrl = ogImageUrl || `posts/${slugifyStr(title)}.png`;
