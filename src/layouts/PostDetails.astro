@@ -104,6 +104,7 @@ const nextPost =
     {
       coverImageUrl && (
         <img
+          id="post-cover-image"
           class="mt-6 h-auto w-full rounded-lg"
           src={coverImageUrl}
           alt={coverImageAlt}
@@ -384,9 +385,9 @@ const nextPost =
     const article = document.getElementById("article");
     if (!article) return;
 
-    const images = Array.from(article.querySelectorAll("img")).filter(
-      img => !img.closest("a")
-    );
+    const images = Array.from(
+      document.querySelectorAll("#post-cover-image, #article img")
+    ).filter(img => !img.closest("a"));
 
     if (images.length === 0) return;
 
