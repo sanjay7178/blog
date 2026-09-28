@@ -160,7 +160,7 @@ const nextPost =
       {
         nextPost && (
           <a
-            href={`${import.meta.env.BASE_URL }/posts/`+ `${nextPost.slug}`} 
+            href={`${import.meta.env.BASE_URL}/posts/` + `${nextPost.slug}`}
             class="flex w-full justify-end gap-1 text-right hover:opacity-75 sm:col-start-2"
           >
             <div>
@@ -197,6 +197,28 @@ const nextPost =
   }
   .post-title {
     @apply font-serif text-3xl font-normal tracking-tight text-skin-base sm:text-4xl;
+  }
+
+  #article :global(h2),
+  #article :global(h3) {
+    @apply font-sans;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    letter-spacing: normal !important;
+  }
+
+  #article :global(h2) {
+    font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+    line-height: 1.35;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem !important;
+  }
+
+  #article :global(h3) {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    line-height: 1.4;
+    margin-top: 2rem;
+    margin-bottom: 0.875rem !important;
   }
 </style>
 
@@ -331,9 +353,9 @@ const nextPost =
     const article = document.getElementById("article");
     if (!article) return;
 
-    const images = Array.from(
-      article.querySelectorAll("img")
-    ).filter(img => !img.closest("a"));
+    const images = Array.from(article.querySelectorAll("img")).filter(
+      img => !img.closest("a")
+    );
 
     if (images.length === 0) return;
 

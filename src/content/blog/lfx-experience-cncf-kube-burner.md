@@ -4,7 +4,7 @@ pubDatetime: 2026-05-30T21:38:14.644Z
 modDatetime: 2026-06-05T12:00:00.000Z
 title: "My LFX Mentorship Journey with CNCF kube-burner — Term 1 '26"
 slug: lfx-experience-cncf-kube-burner
-featured: true
+featured: false
 draft: false
 tags:
   - lfx
