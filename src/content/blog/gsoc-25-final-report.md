@@ -4,7 +4,7 @@ pubDatetime: 2025-08-28T13:56:10Z
 modDatetime: 2025-08-28T13:56:10Z
 title: Google Summer of Code'25 Final Report
 slug: gsoc-25-final-report
-featured: true
+featured: false
 draft: false
 tags:
   - gsoc

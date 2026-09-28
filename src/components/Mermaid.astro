@@ -1,0 +1,83 @@
+<script>
+  let renderQueue = Promise.resolve();
+  let diagramId = 0;
+
+  async function renderDiagrams() {
+    const diagrams = document.querySelectorAll<HTMLElement>(".mermaid-diagram");
+    if (!diagrams.length) return;
+
+    const { default: mermaid } = await import("mermaid");
+    await document.fonts.ready;
+    const theme =
+      document.documentElement.dataset.theme === "dark" ? "dark" : "default";
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme,
+      flowchart: { htmlLabels: false },
+      suppressErrorRendering: true,
+    });
+
+    for (const diagram of diagrams) {
+      if (!diagram.isConnected || diagram.dataset.renderedTheme === theme)
+        continue;
+      const source = diagram.dataset.mermaidSource ?? diagram.textContent ?? "";
+      diagram.dataset.mermaidSource = source;
+      try {
+        const { svg } = await mermaid.render(
+          `mermaid-diagram-${diagramId++}`,
+          source
+        );
+        if (!diagram.isConnected) continue;
+        diagram.innerHTML = svg;
+        diagram.dataset.renderedTheme = theme;
+      } catch (error) {
+        const fallback = document.createElement("pre");
+        fallback.textContent = source;
+        diagram.replaceChildren(fallback);
+        console.error("Unable to render Mermaid diagram", error);
+      }
+    }
+  }
+
+  function scheduleRender() {
+    renderQueue = renderQueue
+      .then(renderDiagrams)
+      .catch(error => console.error("Unable to load Mermaid", error));
+  }
+
+  document.addEventListener("astro:page-load", scheduleRender);
+  new MutationObserver(scheduleRender).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+  scheduleRender();
+</script>
+
+<style is:global>
+  .mermaid-diagram {
+    margin-block: 1.5rem;
+    padding-block: 0.75rem;
+    overflow-x: auto;
+    text-align: center;
+  }
+
+  .mermaid-diagram > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-inline: auto;
+    overflow: visible;
+  }
+
+  .mermaid-diagram .node > :is(rect, polygon, circle, ellipse, path) {
+    filter: drop-shadow(0 6px 5px rgb(0 0 0 / 22%));
+  }
+
+  html[data-theme="dark"]
+    .mermaid-diagram
+    .node
+    > :is(rect, polygon, circle, ellipse, path) {
+    filter: drop-shadow(0 6px 5px rgb(0 0 0 / 50%));
+  }
+</style>

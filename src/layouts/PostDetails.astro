@@ -7,6 +7,7 @@ import Datetime from "@components/Datetime";
 import type { CollectionEntry } from "astro:content";
 import { slugifyStr } from "@utils/slugify";
 import ShareLinks from "@components/ShareLinks.astro";
+import Mermaid from "@components/Mermaid.astro";
 import { SITE } from "@config";
 
 export interface Props {
@@ -187,6 +188,7 @@ const nextPost =
     </div>
   </main>
   <Footer />
+  <Mermaid />
 </Layout>
 
 <style>
@@ -269,6 +271,8 @@ const nextPost =
     const codeBlocks = Array.from(document.querySelectorAll("pre"));
 
     for (const codeBlock of codeBlocks) {
+      if (codeBlock.closest(".mermaid-diagram")) continue;
+
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
 
