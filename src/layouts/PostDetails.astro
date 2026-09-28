@@ -397,6 +397,19 @@ const nextPost =
 
     const img = document.createElement("img");
     img.className = "lightbox-image";
+    img.draggable = false;
+
+    const zoomControls = document.createElement("div");
+    zoomControls.className = "lightbox-zoom-controls";
+    const zoomOutBtn = document.createElement("button");
+    zoomOutBtn.textContent = "−";
+    zoomOutBtn.setAttribute("aria-label", "Zoom out");
+    const resetZoomBtn = document.createElement("button");
+    resetZoomBtn.setAttribute("aria-label", "Reset image zoom");
+    const zoomInBtn = document.createElement("button");
+    zoomInBtn.textContent = "+";
+    zoomInBtn.setAttribute("aria-label", "Zoom in");
+    zoomControls.append(zoomOutBtn, resetZoomBtn, zoomInBtn);
 
     const prevBtn = document.createElement("button");
     prevBtn.className = "lightbox-nav lightbox-prev";
@@ -419,11 +432,70 @@ const nextPost =
       '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>';
     closeBtn.setAttribute("aria-label", "Close lightbox");
 
-    overlay.append(img, prevBtn, nextBtn, counter, closeBtn);
+    overlay.append(img, prevBtn, nextBtn, counter, closeBtn, zoomControls);
     document.body.appendChild(overlay);
 
     let currentIndex = -1;
     let visible = false;
+    let zoom = 1;
+    let panX = 0;
+    let panY = 0;
+    let drag = null;
+
+    function updateTransform() {
+      const maxX = Math.max(
+        0,
+        (img.clientWidth * zoom - overlay.clientWidth) / 2
+      );
+      const maxY = Math.max(
+        0,
+        (img.clientHeight * zoom - overlay.clientHeight) / 2
+      );
+      panX = Math.max(-maxX, Math.min(maxX, panX));
+      panY = Math.max(-maxY, Math.min(maxY, panY));
+      img.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+      img.style.cursor = zoom > 1 ? "grab" : "zoom-in";
+      resetZoomBtn.textContent = `${Math.round(zoom * 100)}%`;
+      zoomOutBtn.disabled = zoom === 1;
+      zoomInBtn.disabled = zoom === 4;
+    }
+
+    function setZoom(value) {
+      zoom = Math.max(1, Math.min(4, value));
+      if (zoom === 1) panX = panY = 0;
+      updateTransform();
+    }
+
+    zoomInBtn.addEventListener("click", () => setZoom(zoom + 0.5));
+    zoomOutBtn.addEventListener("click", () => setZoom(zoom - 0.5));
+    resetZoomBtn.addEventListener("click", () => setZoom(1));
+    img.addEventListener("dblclick", () => setZoom(zoom === 1 ? 2 : 1));
+    img.addEventListener(
+      "wheel",
+      e => {
+        e.preventDefault();
+        setZoom(zoom + (e.deltaY < 0 ? 0.25 : -0.25));
+      },
+      { passive: false }
+    );
+    img.addEventListener("pointerdown", e => {
+      if (zoom === 1 || e.button !== 0) return;
+      drag = { id: e.pointerId, x: e.clientX - panX, y: e.clientY - panY };
+      img.setPointerCapture(e.pointerId);
+      img.style.cursor = "grabbing";
+    });
+    img.addEventListener("pointermove", e => {
+      if (!drag || drag.id !== e.pointerId) return;
+      panX = e.clientX - drag.x;
+      panY = e.clientY - drag.y;
+      updateTransform();
+      img.style.cursor = "grabbing";
+    });
+    img.addEventListener("lostpointercapture", () => {
+      drag = null;
+      updateTransform();
+    });
+    img.addEventListener("load", updateTransform);
 
     function show(index) {
       currentIndex = index;
@@ -433,6 +505,8 @@ const nextPost =
       overlay.classList.add("lightbox-visible");
       document.body.style.overflow = "hidden";
       visible = true;
+      drag = null;
+      setZoom(1);
       prevBtn.style.display = images.length > 1 ? "" : "none";
       nextBtn.style.display = images.length > 1 ? "" : "none";
     }
@@ -441,6 +515,8 @@ const nextPost =
       overlay.classList.remove("lightbox-visible");
       document.body.style.overflow = "";
       visible = false;
+      drag = null;
+      setZoom(1);
     }
 
     function next() {
