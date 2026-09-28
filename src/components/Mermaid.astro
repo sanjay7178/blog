@@ -10,10 +10,24 @@
     await document.fonts.ready;
     const theme =
       document.documentElement.dataset.theme === "dark" ? "dark" : "default";
+    const isDark = theme === "dark";
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "strict",
-      theme,
+      theme: "base",
+      themeVariables: {
+        darkMode: isDark,
+        background: isDark ? "#16222c" : "#f9fafb",
+        primaryColor: isDark ? "#303b49" : "#e8edf3",
+        primaryTextColor: isDark ? "#ecf1f3" : "#11181c",
+        primaryBorderColor: isDark ? "#94a3b8" : "#64748b",
+        secondaryColor: isDark ? "#263442" : "#eef2f6",
+        tertiaryColor: isDark ? "#263442" : "#eef2f6",
+        lineColor: isDark ? "#cbd5e1" : "#475569",
+        textColor: isDark ? "#ecf1f3" : "#11181c",
+        edgeLabelBackground: isDark ? "#16222c" : "#f9fafb",
+      },
+      htmlLabels: false,
       flowchart: { htmlLabels: false },
       suppressErrorRendering: true,
     });

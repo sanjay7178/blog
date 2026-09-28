@@ -1,6 +1,7 @@
 ---
 author: Sai Sanjay
 pubDatetime: 2026-09-28T00:00:00Z
+modDatetime: 2026-09-28T06:14:50Z
 title: "Remote Desktop on Linux: Why the Compositor Now Matters"
 slug: remote-desktop-linux-x11-wayland
 featured: true
@@ -132,6 +133,125 @@ The compositor problem does not make protocol choice irrelevant. It means protoc
 [RFB](https://www.rfc-editor.org/info/rfc6143/) is the protocol behind VNC. [RDP](https://learn.microsoft.com/en-us/windows/win32/termserv/remote-desktop-protocol) includes multiple channels and capabilities, but the label alone does not guarantee that every server implements every feature.
 
 Also, native Wayland application forwarding exists. [waypipe](https://manpages.debian.org/bookworm/waypipe/waypipe.1.en.html) proxies Wayland applications and offers an SSH-oriented workflow resembling X forwarding. Losing built-in network transparency did not eliminate this use case; it moved the work into another component.
+
+## The browser is a client, not the whole remote desktop stack
+
+So far, I have mostly discussed the server side. But many people do not want to install a desktop client at all. They want to open a URL, log in, and get their applications. Browser-based access is an important part of the remote desktop landscape, and it comes in several different forms.
+
+The distinction I find useful is between putting a browser interface in front of an existing protocol, designing desktop streaming around the browser, and managing the environment being streamed. These approaches can overlap, but they solve different problems. None makes the server's display architecture irrelevant.
+
+### Browser clients and gateways
+
+[noVNC](https://novnc.com/info.html) is a JavaScript VNC client that uses WebSockets and Canvas. The browser handles RFB, while a WebSocket-to-TCP proxy such as websockify commonly connects it to a conventional VNC server. If the server already offers WebSocket connections, a separate proxy is not necessarily needed. This is browser delivery of VNC, not a replacement for the server that supplies the desktop.
+
+That gives noVNC a useful integration boundary. The same browser client can sit in front of different VNC backends. Whether the desktop is an X11 virtual session, a compatible Wayland compositor exposed through a VNC server, or a virtual machine's console is a separate question. Installing noVNC alone does not create that session or grant access to its screen and input.
+
+[Apache Guacamole](https://guacamole.apache.org/doc/gug/guacamole-architecture.html) takes a gateway approach. Its browser client communicates using the Guacamole protocol; the web application forwards that traffic to `guacd`, whose protocol plugins connect to RDP, VNC, or SSH endpoints. The browser does not need a separate implementation of each backend protocol. SSH access here is a terminal, not automatically a graphical desktop.
+
+```mermaid
+flowchart LR
+    browser["One browser interface<br/>Separate RDP, VNC and SSH sessions"]
+    webapp["Guacamole web application<br/>Authentication and connection tunnels"]
+    gateway["guacd gateway<br/>Load a client plugin for each connection"]
+    rdp["RDP client plugin<br/>Session A"]
+    vnc["VNC client plugin<br/>Session B"]
+    ssh["SSH client plugin<br/>Session C"]
+    rdphost["RDP server<br/>Remote desktop"]
+    vnchost["VNC server<br/>Remote desktop"]
+    sshhost["SSH server<br/>Remote shell"]
+
+    browser <-->|Guacamole protocol over WebSocket or HTTP tunnel| webapp
+    webapp <-->|Separate Guacamole protocol connections over TCP| gateway
+    gateway <--> rdp
+    gateway <--> vnc
+    gateway <--> ssh
+    rdp <-->|RDP| rdphost
+    vnc <-->|VNC / RFB| vnchost
+    ssh <-->|SSH| sshhost
+```
+
+The common browser protocol is what makes this work: each plugin translates its backend's output and input into Guacamole's display and event instructions. Connections run independently, so different protocols can be used concurrently without the browser implementing them. The gateway does not merge those sessions or create the desktops behind them; each endpoint still owns its remote environment.
+
+Guacamole's “clientless” description means no dedicated client installation on the user's device, not no server infrastructure. It still needs the gateway and reachable endpoints. For a Linux desktop, the RDP or VNC server behind it remains responsible for capture, input, and sessions. A gateway can unify access without making different display servers equivalent.
+
+[Xpra's HTML5 client](https://github.com/Xpra-org/xpra-html5/blob/master/README.md) is another route: browser access to an Xpra server. This extends the persistent-application model discussed earlier. It is worth remembering that browser remoting need not mean streaming an entire workstation; applications can be the unit of access. The browser interface does not change which applications and display environments the server can host.
+
+### Browser-native desktops
+
+[KasmVNC](https://github.com/kasmtech/KasmVNC) couples a Linux desktop/application server with a browser client. Despite the name, the project explicitly departs from standard RFB and does not support traditional VNC viewers. That is a compatibility tradeoff: designing for the browser can mean moving away from an established client ecosystem. It should not be presented as just another interchangeable noVNC backend.
+
+KasmVNC and Kasm Workspaces are also different layers. Workspaces adds a platform around access to desktops and applications, including containerized environments. Its [fixed-infrastructure documentation](https://www.kasmweb.com/docs/latest/how_to/fixed_infrastructure.html) also covers existing RDP, VNC, SSH, and KasmVNC endpoints. For those external machines, presenting a workspace does not mean Workspaces manages the underlying server's lifecycle. Streaming technology and workspace orchestration should be evaluated separately.
+
+LinuxServer.io's [Webtop 2.0 announcement from July 2023](https://www.linuxserver.io/blog/webtop-2-0-the-year-of-the-linux-desktop) illustrates this evolution. Earlier Webtop combined xrdp, Guacamole, and an in-house client. Webtop 2.0 moved to KasmVNC to deliver containerized Linux desktops through a browser. That article is useful architectural history, but it is not a description of today's backend: [current Webtop documentation](https://docs.linuxserver.io/images/docker-webtop/) describes its Selkies-based platform.
+
+[Selkies](https://github.com/selkies-project/selkies) provides Linux desktop streaming with GPU/CPU acceleration and a browser client, for deployment on hosts or in containers and clustered environments. Its current upstream README describes plain WebSockets as the default transport, with WebRTC available as an option. Calling it “WebRTC remote desktop” without a version or qualification would miss that current design.
+
+At a high level, the streaming path looks like this. Selkies' [current component documentation](https://docs.selkies.io/latest/) identifies `pixelflux` as the screen-capture and encoding component and `pcmflux` as the audio component. The diagram abstracts away codec negotiation and deployment-specific display/input backends; it is not a claim that every Wayland compositor exposes the same interfaces.
+
+```mermaid
+flowchart TD
+    session["Linux applications and desktop session<br/>X11 or a supported Wayland environment"]
+    video["pixelflux<br/>Screen capture and GPU / CPU encoding"]
+    audio["pcmflux<br/>Session audio processing"]
+    server["Selkies server"]
+    transport["WebSockets by default<br/>WebRTC optional"]
+    browser["HTML5 browser client<br/>Decode / render video and play audio"]
+    input["Session-specific input integration"]
+
+    session -->|Screen frames| video
+    session -->|Audio| audio
+    video -->|Encoded video| server
+    audio -->|Audio stream| server
+    server -->|Video and audio| transport
+    transport -->|Media delivery| browser
+    browser -->|Keyboard, mouse and gamepad events| transport
+    transport -->|Input messages| server
+    server --> input
+    input -->|Apply input to remote session| session
+```
+
+[SealSkin](https://github.com/selkies-project/sealskin) uses Selkies to stream applications from isolated server-side containers. Its browser extension opens links and files remotely, while the platform manages sessions and storage. Selkies handles streaming; SealSkin manages the workloads. The remote environment still needs a working display and input stack.
+
+What interests me here is ownership of the environment. A packaged container desktop can provide the display server, applications, and streaming components together. That is different from attaching to the GNOME session already running on somebody's laptop. Supporting X11 and Wayland paths in such a stack does not prove compatibility with every installed compositor. Transport, encoding, and the supported session environment still need separate checks.
+
+### Remote access and administration
+
+[Chrome Remote Desktop](https://support.google.com/chrome/a/answer/2799701?hl=en) combines a browser-facing service with software on the remote host. Google's enterprise documentation describes organizational controls over its use. The [network guide](https://support.google.com/chrome/a/answer/16364503?hl=en) explains that connection negotiation involves Google services. This is a different operational model from running your own noVNC endpoint or Guacamole gateway; enterprise policies do not turn it into a separate display protocol.
+
+[MeshCentral](https://docs.meshcentral.com/) puts browser desktop access alongside terminals and file management in a remote-management platform. Its documentation covers the host agent and browser-to-agent relay architecture. That makes it relevant when the goal is administering machines, not just giving users a fresh desktop. As with other agent-based tools, browser access says nothing by itself about which Linux graphical sessions the installed agent can control.
+
+[RustDesk Web Client V2](https://rustdesk.com/blog/rustdesk-web-client-v2-preview/) deserves its own mention because it brings RustDesk access into the browser. The project's announcement and web entry point describe it as a **preview**. I would not assume feature parity with the native clients or treat their Linux support as a guarantee for the web client. There are two compatibility questions: can this browser deployment establish the RustDesk connection, and can the remote host capture and control the intended session? RustDesk's separately announced unattended Wayland work, discussed below, should not be conflated with the web client's status.
+
+### Managed Linux sessions
+
+[ThinLinc](https://www.cendio.com/thinlinc/what-is-thinlinc/) belongs in this discussion as a server-side Linux desktop and application platform, rather than merely another browser viewer. Its [Web Access documentation](https://www.cendio.com/resources/docs/tag/tlwebaccess_usage.html) describes logging into the server through a browser, starting a session or reusing an existing one. This directly addresses the session-management layer that a standalone frontend leaves to other components.
+
+The same documentation notes a useful limitation: Web Access does not fully support choosing between multiple sessions belonging to the same user. It also documents a clipboard dialog rather than transparent local clipboard integration. These are concrete workflow details worth checking instead of assuming that a web client duplicates the native experience. Managed remote sessions should not be mistaken for automatic access to an arbitrary local Wayland desktop.
+
+For broader enterprise context, [Amazon DCV](https://aws.amazon.com/hpc/dcv/) provides Linux and Windows remote environments with browser and native clients. [Azure Virtual Desktop](https://learn.microsoft.com/en-us/azure/virtual-desktop/connect-azure-virtual-desktop) offers browser access to its published resources, while [Citrix Workspace for HTML5](https://docs.citrix.com/en-us/citrix-workspace-app-for-html5) delivers hosted applications and desktops through the browser. These illustrate the distinction between client delivery and the infrastructure that provisions and owns sessions.
+
+<details>
+<summary>Research notes: compare browser clients, gateways, and session platforms</summary>
+
+Here is how I would separate the roles, rather than rank the products:
+
+| Project               | Architectural role                               | Server/session dependency                              | X11/Wayland relevance                                      |
+| --------------------- | ------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------- |
+| noVNC                 | Browser RFB client                               | VNC server, often a WebSocket proxy                    | Determined by the VNC backend                              |
+| Guacamole             | Multi-protocol gateway                           | `guacd` and RDP/VNC/SSH endpoints                      | Determined by the graphical endpoint                       |
+| Xpra HTML5            | Browser application/session client               | Xpra server and its hosted applications                | Browser access retains server-side display requirements    |
+| KasmVNC               | Browser-oriented streaming server/client         | KasmVNC-hosted environment                             | Not a universal compositor adapter                         |
+| Kasm Workspaces       | Workspace and access platform                    | Containers or existing endpoints                       | Depends on the chosen workspace/backend                    |
+| Webtop                | Packaged container desktop                       | Desktop image and current Selkies stack                | Image and desktop configuration matter                     |
+| Selkies               | Browser-native streaming stack                   | Supported capture/input and display environment        | Offers X11/Wayland paths, not universal session access     |
+| Chrome Remote Desktop | Service-mediated remote access                   | Host software and Google services                      | Host/session support must be checked                       |
+| MeshCentral           | Agent-based administration                       | Management server and remote agents                    | Depends on the agent's graphical integration               |
+| RustDesk Web          | Browser remote-access client, documented preview | RustDesk host and compatible connection infrastructure | Web-client status and host Wayland support are separate    |
+| ThinLinc Web Access   | Browser entry to managed Linux sessions          | ThinLinc server and session services                   | Managed sessions are distinct from sharing a local desktop |
+
+</details>
+
+The browser removes one installation step for the user. It does not remove the need to authenticate them, produce pixels, accept authorized input, or decide who owns the session. That brings us back to compositors—and to projects that create the remote environment themselves.
 
 ## What Termland does differently
 
