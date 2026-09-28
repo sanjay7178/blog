@@ -59,6 +59,19 @@ export const blogSchema = z.object({
 });
 ```
 
+### Optional cover image
+
+Set `ogImage` to show an image below the post title and date and use the same image in social link previews. Add `ogImageAlt` for a descriptive alternative text. Without `ogImage`, the article has no cover and keeps its generated social preview.
+
+For example, put an image in `public/images/remote-desktop-cover.jpg` and add:
+
+```yaml
+ogImage: images/remote-desktop-cover.jpg
+ogImageAlt: "Remote desktop clients connected to a Linux compositor"
+```
+
+The relative public path includes the site's `/blog/` base automatically. An absolute HTTPS image URL also works. Local images referenced through the content image schema must be at least 1200 × 630 pixels; this is also a useful target for public and remote preview images.
+
 ### Sample Frontmatter
 
 Here is the sample frontmatter for a post.
@@ -76,7 +89,6 @@ tags:
   - some
   - example
   - tags
-ogImage: ""
 description: This is the example description of the example post.
 canonicalURL: https://example.org/my-article-was-already-posted-here
 ---

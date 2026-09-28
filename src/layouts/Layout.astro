@@ -12,6 +12,9 @@ export interface Props {
   profile?: string;
   description?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   canonicalURL?: string;
   pubDatetime?: Date;
   modDatetime?: Date | null;
@@ -24,6 +27,9 @@ const {
   profile = SITE.profile,
   description = SITE.desc,
   ogImage = SITE.ogImage,
+  ogImageAlt = title,
+  ogImageWidth,
+  ogImageHeight,
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
   pubDatetime,
   modDatetime,
@@ -70,8 +76,12 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL }/favicon.svg` } />
-    <link rel="canonical" href={`${import.meta.env.BASE_URL }`+canonicalURL} />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href={`${import.meta.env.BASE_URL}/favicon.svg`}
+    />
+    <link rel="canonical" href={`${import.meta.env.BASE_URL}` + canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- General Meta Tags -->
@@ -79,7 +89,7 @@ const structuredData = {
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <meta name="author" content={author} />
-    <link rel="sitemap" href={`${import.meta.env.BASE_URL }/sitemap.xml` }  />
+    <link rel="sitemap" href={`${import.meta.env.BASE_URL}/sitemap.xml`} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={ogType} />
@@ -89,9 +99,13 @@ const structuredData = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={socialImageURL} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={title} />
+    {ogImageWidth && <meta property="og:image:width" content={ogImageWidth} />}
+    {
+      ogImageHeight && (
+        <meta property="og:image:height" content={ogImageHeight} />
+      )
+    }
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Article Published/Modified time -->
     {
@@ -117,7 +131,7 @@ const structuredData = {
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />
-    <meta name="twitter:image:alt" content={title} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <!-- Google JSON-LD Structured data -->
     <script
@@ -159,7 +173,8 @@ const structuredData = {
 
     <ViewTransitions />
 
-  <script is:inline src={`${import.meta.env.BASE_URL}/toggle-theme.js`}></script>
+    <script is:inline src={`${import.meta.env.BASE_URL}/toggle-theme.js`}
+    ></script>
   </head>
   <body>
     <SideRails />

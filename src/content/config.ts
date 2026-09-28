@@ -20,6 +20,7 @@ const blog = defineCollection({
         })
         .or(z.string())
         .optional(),
+      ogImageAlt: z.string().optional(),
       description: z.string(),
       canonicalURL: z.string().optional(),
       editPost: z
